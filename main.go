@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 )
+
+var db *sql.DB
 
 func init() {
 	// Load values from .env into the system

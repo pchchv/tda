@@ -9,7 +9,8 @@ import (
 
 func base() {
 	// Connect to database
-	if _, err := sql.Open("postgres", getEnvValue("DATABASE")); err != nil {
+	var err error
+	if db, err = sql.Open("postgres", getEnvValue("DATABASE")); err != nil {
 		log.Fatal(err)
 	}
 }
