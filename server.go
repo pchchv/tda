@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v3"
@@ -11,8 +12,25 @@ func pingHandler(c fiber.Ctx) error {
 	return c.SendString("To do app service. Version 0.0.0")
 }
 
-func indexHandler(c fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+func indexHandler(c fiber.Ctx, db *sql.DB) (err error) {
+	var rows *sql.Rows
+	if rows, err = db.Query("SELECT * FROM todos"); err != nil {
+		log.Fatal(err)
+		c.JSON(fmt.Sprintf("Database error: %v", err))
+	}
+
+	defer rows.Close()
+
+	var res string
+	var todos []string
+	for rows.Next() {
+		rows.Scan(&res)
+		todos = append(todos, res)
+	}
+
+	return c.Render("index", fiber.Map{
+		"Todos": todos,
+	})
 }
 
 func postHandler(c fiber.Ctx, db *sql.DB) error {
