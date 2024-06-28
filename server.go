@@ -60,7 +60,9 @@ func putHandler(c fiber.Ctx, db *sql.DB) error {
 }
 
 func deleteHandler(c fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	todoToDelete := c.Query("item")
+	db.Exec("DELETE from todos WHERE item=$1", todoToDelete)
+	return c.SendString("deleted")
 }
 
 func server() {
