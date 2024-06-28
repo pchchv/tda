@@ -16,7 +16,7 @@ func indexHandler(c fiber.Ctx, db *sql.DB) (err error) {
 	var rows *sql.Rows
 	if rows, err = db.Query("SELECT * FROM todos"); err != nil {
 		log.Fatal(err)
-		c.JSON(fmt.Sprintf("Database error: %v", err))
+		c.JSON(fmt.Sprintf("Database error: %e", err))
 	}
 
 	defer rows.Close()
