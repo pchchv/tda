@@ -54,7 +54,9 @@ func postHandler(c fiber.Ctx, db *sql.DB) error {
 }
 
 func putHandler(c fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	old, new := c.Query("olditem"), c.Query("newitem")
+	db.Exec("UPDATE todos SET item=$1 WHERE item=$2", new, old)
+	return c.Redirect().To("/")
 }
 
 func deleteHandler(c fiber.Ctx, db *sql.DB) error {
