@@ -34,7 +34,23 @@ func indexHandler(c fiber.Ctx, db *sql.DB) (err error) {
 }
 
 func postHandler(c fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	var newTodo todo
+	if err := c.Bind().Body(&newTodo); err != nil {
+		log.Printf("An error occured: %e", err)
+		return c.SendString(fmt.Sprintf("An error occured: %e", err))
+	}
+
+	fmt.Print(newTodo)
+
+	if newTodo.Item != "" {
+		if _, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item); err != nil {
+			log.Fatalf("An error occured while executing query: %e", err)
+		}
+	} else {
+		return c.SendString("Empty todo")
+	}
+
+	return c.Redirect().To("/")
 }
 
 func putHandler(c fiber.Ctx, db *sql.DB) error {
