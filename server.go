@@ -9,14 +9,14 @@ import (
 )
 
 func pingHandler(c fiber.Ctx) error {
-	return c.SendString("To do app service. Version 0.0.0")
+	return c.SendString("to do app service. Version 0.0.0")
 }
 
 func indexHandler(c fiber.Ctx, db *sql.DB) (err error) {
 	var rows *sql.Rows
 	if rows, err = db.Query("SELECT * FROM todos"); err != nil {
 		log.Fatal(err)
-		c.JSON(fmt.Sprintf("Database error: %e", err))
+		c.JSON(fmt.Sprintf("database error: %e", err))
 	}
 
 	defer rows.Close()
@@ -36,18 +36,18 @@ func indexHandler(c fiber.Ctx, db *sql.DB) (err error) {
 func postHandler(c fiber.Ctx, db *sql.DB) error {
 	var newTodo todo
 	if err := c.Bind().Body(&newTodo); err != nil {
-		log.Printf("An error occured: %e", err)
-		return c.SendString(fmt.Sprintf("An error occured: %e", err))
+		log.Printf("error occured: %e", err)
+		return c.SendString(fmt.Sprintf("error occured: %e", err))
 	}
 
 	fmt.Print(newTodo)
 
 	if newTodo.Item != "" {
 		if _, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item); err != nil {
-			log.Fatalf("An error occured while executing query: %e", err)
+			log.Fatalf("error occured while executing query: %e", err)
 		}
 	} else {
-		return c.SendString("Empty todo")
+		return c.SendString("error: empty todo")
 	}
 
 	return c.Redirect().To("/")
