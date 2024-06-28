@@ -10,6 +10,10 @@ import (
 
 var db *sql.DB
 
+type todo struct {
+	Item string
+}
+
 func init() {
 	// Load values from .env into the system
 	if err := godotenv.Load(); err != nil {
